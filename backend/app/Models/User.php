@@ -12,9 +12,12 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
-    protected $fillable = ['name','email','password','otp'];
+    protected $fillable = ['name','email','password','phone','otp','role','locale','status'];
     protected $attributes = [
-        'otp' => '0'
+        'otp' => '0',
+        'role' => 'user',
+        'locale' => 'en',
+        'status' => 'active',
     ];
 
     /**
