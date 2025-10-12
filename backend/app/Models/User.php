@@ -15,10 +15,14 @@ class User extends Authenticatable
     protected $fillable = ['name','email','password','phone','otp','role','locale','status'];
     protected $attributes = [
         'otp' => '0',
-        'role' => 'user',
+        'role' => 'customer',
         'locale' => 'en',
         'status' => 'active',
     ];
+
+    public function customers() {
+        return $this->hasMany(Customer::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -27,7 +31,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**

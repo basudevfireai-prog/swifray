@@ -1,15 +1,16 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\TokenVerificationMiddleware;
 use Illuminate\Support\Facades\Route;
 
-// Route::prefix('api')->group(function () {
-    Route::post('/user-registration', [UserController::class, 'userRegistration']);
-    Route::post('/user-login', [UserController::class, 'userLogin']);
-    Route::post('/send-otp', [UserController::class, 'sendOtp']);
-    Route::post('/verify-otp', [UserController::class, 'verifyOtp']);
-    Route::post('/reset-password', [UserController::class, 'resetPassword'])->middleware([TokenVerificationMiddleware::class]);
 
-    Route::get('/logout', [UserController::class,'logout'])->middleware([TokenVerificationMiddleware::class]);
-// });
+// Customer Routes
+Route::post('/customer-registration', [CustomerController::class, 'customerRegistration']);
+Route::post('/customer-login', [CustomerController::class, 'customerLogin']);
+Route::post('/customer-send-otp', [CustomerController::class, 'customerSendOtp']);
+Route::post('/customer-verify-otp', [CustomerController::class, 'customerVerifyOtp']);
+Route::post('/customer-reset-password', [CustomerController::class, 'customerResetPassword'])->middleware([TokenVerificationMiddleware::class]);
+
+Route::get('/customer-logout', [CustomerController::class,'customerLogout'])->middleware([TokenVerificationMiddleware::class]);
