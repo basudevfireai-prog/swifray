@@ -24,6 +24,10 @@ class User extends Authenticatable
         return $this->hasMany(Customer::class);
     }
 
+    public function drivers() {
+        return $this->hasMany(Driver::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

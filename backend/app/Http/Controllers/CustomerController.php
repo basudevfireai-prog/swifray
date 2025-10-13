@@ -136,7 +136,6 @@ class CustomerController extends Controller
 
     public function customerVerifyOtp(Request $request){
         try{
-            // $user = User::where('email', $request->input('email'))->first();
             $customer = Customer::whereHas('user', function($query) use ($request) {
                 $query->where('email', $request->input('email'));
             })->with('user')->first();
@@ -146,15 +145,14 @@ class CustomerController extends Controller
                     'status' => 'failed',
                     'message' => 'Email not found!'
                 ], 404);
+
             }elseif($customer->user->otp !== $request->input('otp')){
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Invalid OTP!'
                 ], 400);
             }else{
-                // OTP is valid, proceed with the desired action (e.g., password reset)
-                // Clear the OTP after successful verification
-
+                // OTP update
                 $customer->user->otp = 0;
                 $customer->user->save();
 
@@ -166,10 +164,12 @@ class CustomerController extends Controller
                 ], 200)->cookie('token', $token, 60); // Token valid for 60 minutes
             }
         }catch(Exception $e){
+
             return response()->json([
                 'status' => 'failed',
                 'message' => 'OTP verification failed!'
             ], 500);
+
         }
     }
 
