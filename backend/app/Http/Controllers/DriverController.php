@@ -40,8 +40,6 @@ class DriverController extends Controller
                 'email' => $request->input('email'),
                 'password' => Hash::make($request->input('password')),
                 'phone' => $request->input('phone'),
-                'role' => 'driver',
-
             ]);
 
             // Step 2: create customer linked to user
@@ -51,6 +49,11 @@ class DriverController extends Controller
                 'verification_status' => 'pending',
                 'payout_account_id' => Str::uuid(),
             ]);
+
+            // Assign role to user (Spatie package)
+            // $userRole = User::where('id', $driver->user_id)->first();
+            $userRole = User::where('id', $driver->user_id)->first();
+            $userRole->assignRole('driver');
 
             DB::commit();
 
@@ -81,12 +84,12 @@ class DriverController extends Controller
             })->with('user')->first();
 
             if($driver !== null && Hash::check($request->input('password'), $driver->user->password)){
-                $token = JWTToken::createToken($request->input('email'), $driver->user->id);
+                $driver_token = JWTToken::createToken($request->input('email'), $driver->user->id);
 
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Driver logged in successfully',
-                ], 200)->cookie('token', $token, 60*24*30);
+                ], 200)->cookie('driver_token', $driver_token, 60*24*30);
             }
 
             return response()->json([
@@ -201,6 +204,6 @@ class DriverController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Logged out successfully'
-        ], 200)->cookie('token', '', -1);
+        ], 200)->cookie('driver_token', '', -1);
     }
 }

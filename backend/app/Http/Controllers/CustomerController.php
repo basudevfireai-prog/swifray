@@ -51,6 +51,10 @@ class CustomerController extends Controller
                 'billing_account_id' => Str::uuid(), // example unique billing ID
             ]);
 
+            // Assign role to user (Spatie package)
+            $userRole = User::where('id', $customer->user_id)->first();
+            $userRole->assignRole('customer');
+
             DB::commit();
 
             return response()->json([
@@ -80,12 +84,12 @@ class CustomerController extends Controller
             })->with('user')->first();
 
             if($customer !== null && Hash::check($request->input('password'), $customer->user->password)){
-                $token = JWTToken::createToken($request->input('email'), $customer->user->id);
+                $customer_token = JWTToken::createToken($request->input('email'), $customer->user->id);
 
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Login successful',
-                ], 200)->cookie('token', $token, 60*24*30);
+                ], 200)->cookie('customer_token', $customer_token, 60*24*30);
             }
 
             return response()->json([
@@ -200,6 +204,6 @@ class CustomerController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Logged out successfully'
-        ], 200)->cookie('token', '', -1);
+        ], 200)->cookie('customer_token', '', -1);
     }
 }
