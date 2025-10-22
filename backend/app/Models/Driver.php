@@ -15,4 +15,16 @@ class Driver extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    // A User (Driver) can be assigned many Orders
+    public function assignedOrders()
+    {
+        return $this->hasMany(Order::class, 'driver_id');
+    }
+
+    // A User (Driver) has many Earning records
+    public function earnings()
+    {
+        return $this->hasMany(DriverEarning::class, 'driver_id');
+    }
 }

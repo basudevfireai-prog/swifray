@@ -17,6 +17,8 @@ class TokenVerificationMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $isAuthenticated = false;
+
         if($request->hasCookie('customer_token')){
 
             $token = $request->cookie('customer_token');
@@ -25,8 +27,7 @@ class TokenVerificationMiddleware
             if ($customer_result != "unauthorized") {
                 $request->headers->set('email', $customer_result->userEmail);
                 $request->headers->set('id', $customer_result->userID);
-            }else{
-                return redirect('/customer-login');
+                $isAuthenticated = true;
             }
 
         } elseif ($request->hasCookie('driver_token')) {
@@ -37,13 +38,20 @@ class TokenVerificationMiddleware
             if ($driver_result != 'unauthorized') {
                 $request->headers->set('email', $driver_result->userEmail);
                 $request->headers->set('id', $driver_result->userID);
-            }else{
-                return redirect('/driver-login');
+                $isAuthenticated = true;
             }
-
         }
 
-        return $next($request);
+        // If authenticated, proceed
+        if ($isAuthenticated) {
+            return $next($request);
+        }
+
+        // If not authenticated (no token or unauthorized token), return 401 JSON
+        return response()->json([
+            'status' => 'failed',
+            'message' => 'Unauthorized Access. Please log in.',
+        ], 403);
 
     }
 }

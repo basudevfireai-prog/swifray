@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('otp',50);
             $table->string('phone');
             $table->string('locale');
-            $table->string('status');
+            $table->enum('status', ['available', 'busy'])->default('available');
+            $table->timestamp('otp_expires_at')->nullable();
+            $table->timestamp('otp_last_sent_at')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

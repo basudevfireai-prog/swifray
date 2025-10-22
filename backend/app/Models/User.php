@@ -14,11 +14,10 @@ class User extends Authenticatable
 
     protected $guard_name = 'api';
 
-    protected $fillable = ['name','email','password','phone','otp','locale','status'];
+    protected $fillable = ['name','email','password','phone','otp','locale','status','otp_expires_at','otp_last_sent_at'];
     protected $attributes = [
         'otp' => '0',
         'locale' => 'en',
-        'status' => 'active',
     ];
 
     public function customers() {
